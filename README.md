@@ -67,15 +67,13 @@ This supercharges your AwesomeWM key bindings by allowing you to control an infi
 ### Key bindings
 The key binding config is a nested table, where each table key is a key ID (see below), and each corresponding value is an table with two required keys: [1], [2], and an optional key: ["color"]
 
-[1]. A string describing the key.
+- [1]. A string describing the key.
 
-[2]. Either:
-
+- [2]. A function OR nested table.
     - A function to be called when the key is pressed. After pressing the key, this function will be called. A green hydra will stay in this level of the key binding config so that other keys at this level can be pressed again as long as the activation key is still held down. A red hydra doesn't require a key to be continuously held down.
     - A nested config table with the same structure as described above. After pressing the key, hydra will go into this level of the key binding config, and the key hints will be updated to show the keys at this level.
 
-['color']. A string. The color of the head: "blue", or "red", or "green"
-
+- ['color']. A string. The color of the head: "blue", or "red", or "green"
     - "blue": the hydra is stopped once the key is pressed and it's corresponding function is run. Use with actions that you intend to run one at a time to ensure the hydra is closed once the function is called after keypress. This will hide the hint popup window and reset the sequence after the key action runs. Mostly useful for red hydras.
 
 Since this is a plain Lua table, you can define the key binding config in any way you like, such as programmatically generating bindings:
