@@ -1,7 +1,11 @@
 # awesome-wm-hydra
 Multi-key-sequence framework for AwesomeWM with key hints display.
 
-It allows you to bind action to a sequence of any number of keys, such as `Super` + `w` + `c`. The sequence resets only when the initial `Super` is released, allowing you to easily implement modal bindings, such as pressing `Super` + `m` for music-related keys then press `h`/`l` multiple-times for seeking while holding down `Super`.
+It allows you to bind action to a sequence of any number of keys, such as `Super` + `w` + `c`.
+
+In the default (green) mode the sequence resets only when the initial `Super` is released, allowing you to easily implement modal bindings, such as pressing `Super` + `m` for music-related keys then press `h`/`l` multiple-times for seeking while holding down `Super`.
+
+Another mode (red) is available which will keep the hydra open even after the initial activation key is released. Use the `hydra_color` argument set to `"red"` when calling the `hydra.start` function in your config to avoid holding down an extra key. A red hydra will reset once an unavailable key is pressed, or a blue head is activated.
 
 This supercharges your AwesomeWM key bindings by allowing you to control an infinite number of actions through the keyboard without having to remember them all.
 
@@ -61,16 +65,19 @@ This supercharges your AwesomeWM key bindings by allowing you to control an infi
 ## Configuration
 
 ### Key bindings
-The key binding config is a nested table, where each table key is a key ID (see below), and each corresponding value is an array with two elements:
+The key binding config is a nested table, where each table key is a key ID (see below), and each corresponding value is an table with two required keys: [1], [2], and an optional key: ["color"]
 1. A string describing the key.
 2. Either:
-    - A function to be called when the key is pressed. After pressing the key, this function will be called, and hydra will stay in this level of the key binding config so that other keys at this level can be pressed again as long as the activation key is still held down.
+    - A function to be called when the key is pressed. After pressing the key, this function will be called. A green hydra will stay in this level of the key binding config so that other keys at this level can be pressed again as long as the activation key is still held down. A red hydra doesn't require a key to be continuously held down.
     - A nested config table with the same structure as described above. After pressing the key, hydra will go into this level of the key binding config, and the key hints will be updated to show the keys at this level.
+'color'. A string: "blue", or "red", or "green"
+    - "blue": the hydra is stopped once the key is pressed and it's corresponding function is run. Use with actions that you intend to run one at a time to ensure the hydra is closed once the function is called after keypress. This will hide the hint popup window and reset the sequence after the key action runs. Useful only for red hydras.
 
 Since this is a plain Lua table, you can define the key binding config in any way you like, such as programmatically generating bindings:
 ```lua
 for i = 1, 9 do
     super_key_bindings[tostring(i)] = {
+        color = "blue",
         "view tag " .. i,
         function()
             local tag = awful.screen.focused().tags[i]
@@ -95,6 +102,7 @@ Use `hydra.hidden` as the description string to hide the key from key hints. Thi
 ### Main trigger arguments
 Here are the arguments for the `hydra.start` function:
 - Required arguments:
+    - `hydra_color`: The behavior of the hydra. Currently there is a default `"green"` which requires the activation key to be held down and the `"red"` hydra which once activated will stay open with no keys held down.
     - `activation_key`: The trigger key. This is **not** a key ID, but a AwesomeWM key name. This must match the key used in your awesome key config to trigger hydra, since it's used to detect when the activation key is released.
     - `config`: The key binding config table.
 - Optional arguments:
