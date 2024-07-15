@@ -1,11 +1,11 @@
 # awesome-wm-hydra
 Multi-key-sequence framework for AwesomeWM with key hints display.
 
-It allows you to bind action to a sequence of any number of keys, such as `Super` + `w` + `c`.
+It allows you to bind an action to a sequence of any number of keys, such as `Super` + `w` + `c`.
 
-In the default (green) hydra the sequence resets only when the initial `Super` is released, allowing you to easily implement modal bindings, such as pressing `Super` + `m` for music-related keys then press `h`/`l` multiple-times for seeking while holding down `Super`.
+Within the default behavior `green hydra`, the sequence resets only when the initial activation key eg. `Super` is released, allowing you to easily implement modal bindings, such as pressing `Super` + `m` for music-related keys then press `h`/`l` multiple-times for seeking while holding down `Super`.
 
-Another hydra (red) is available which will keep the key-bindings from the active layer open even after the initial activation key is released. Use the `hydra_color` argument set to `"red"` when calling the `hydra.start` function in your config to avoid the requirement of a held key. A red hydra will reset once an unavailable key is pressed, or a `blue head` is activated.
+A different behavior is available: `red hydra` which will keep the key-bindings and hint display from the active layer open even after the initial activation key is released. Use the `hc` or `color` argument set to `"red"` when calling the `hydra.start` function in your config to avoid the requirement of a held key. A red hydra will reset once an unavailable key is pressed, or a `blue head` is activated.
 
 This supercharges your AwesomeWM key bindings by allowing you to control an infinite number of actions through the keyboard without having to remember them all.
 
@@ -74,7 +74,9 @@ The key binding config is a nested table, where each table key is a key ID (see 
     - A nested config table with the same structure as described above. After pressing the key, hydra will go into this level of the key binding config, and the key hints will be updated to show the keys at this level.
 
 - ["color"]. A string. The color of the head: "blue", or "red", or "green"
-    - "blue": the hydra is stopped once the key is pressed and it's corresponding function is run. Use with actions that you intend to run one at a time to ensure the hydra is closed once the function is called after keypress. This will hide the hint popup window and reset the sequence after the key action runs. Mostly useful for red hydras.
+    - "green": Default. Heads in the current layer can be activated successively without leaving the hydra.
+    - "blue": the hydra is stopped once the key is pressed and it's corresponding function is run. Use for "terminal commands" such as launching applications when you want to close the hydra once the head is activated. This will hide the hint popup window and reset the sequence after the key action runs. Mostly useful for red hydras.
+    - "red": No meaning yet. Head color is independant of the color/behavior of a hydra's body.
 
 Since this is a plain Lua table, you can define the key binding config in any way you like, such as programmatically generating bindings:
 ```lua
@@ -108,8 +110,8 @@ Here are the arguments for the `hydra.start` function:
     - `activation_key`: The trigger key. This is **not** a key ID, but a AwesomeWM key name. This must match the key used in your awesome key config to trigger hydra, since it's used to detect when the activation key is released.
     - `config`: The key binding config table.
 - Optional arguments:
-    - `hydra_color`: The behavior of the hydra. Currently there is a default `"green"` which requires the activation key to be held down and the `"red"` hydra which once activated will stay open with no keys held down.
-    - `ignored_mod`: The modifier to ignore when detecting the activation key. This is **not** a key ID, but a AwesomeWM modifier name. This is useful when the activation key is a modifier key, such as `Mod4` (super key), so that the activation key itself does not have to be specified in the key binding config.
+    - `color`: The behavior of the hydra. Currently there is a default `"green"` which requires the activation key to be held down and the `"red"` hydra which once activated will stay open with no keys held down.
+    - `ignored_mod`: The modifier to ignore when detecting the activation key. This is **not** a key ID, but a AwesomeWM modifier name. This is useful when the activation key is a modifier key, such as `Mod4` (super key), so that the activation key itself does not have to be specified in the key binding config. Can optionally be a table if multiple ignored modifiers are needed.
     - `hide_first_level`: Whether to hide the key hints at the first level. Defaults to `false`.
 - Key hint theme customizations:
     - `key_fg`: The foreground color of the keys.
